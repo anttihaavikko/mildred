@@ -15,6 +15,9 @@ public class Panda : MonoBehaviour {
 
 	private int currentDirection = 1;
 
+	private bool grounded = false;
+	public LayerMask groundLayer;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
@@ -23,16 +26,24 @@ public class Panda : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
+
+		grounded = Physics2D.Raycast (transform.position, Vector2.down, 1f, groundLayer);
+		Color c = grounded ? Color.green : Color.red;
+		Debug.DrawRay (transform.position, Vector2.down, c);
 	}
 
 	void FixedUpdate() {
 		float dir = InputMagic.Instance.GetAxis (InputMagic.STICK_OR_DPAD_X);
 		body.AddTorque (-dir * rollForce);
 		targetSize = (InputMagic.Instance.GetButton (InputMagic.A)) ? new Vector3 (1.1f, 0.9f, 1f) : new Vector3 (1f, 1f, 1f);
+
+		if(Physics2D.OverlapCircle(transform.position, 0.2f, groundLayer)) {
+			Reset();
+		}
 	}
 
 	void LateUpdate() {
-		if (InputMagic.Instance.GetButtonUp (InputMagic.A)) {
+		if (grounded && InputMagic.Instance.GetButtonUp (InputMagic.A)) {
 			body.velocity = new Vector2 (body.velocity.x, 0);
 			body.AddForce (Vector2.up * jumpForce, ForceMode2D.Impulse);
 		}
