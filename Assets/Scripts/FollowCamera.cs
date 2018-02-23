@@ -9,6 +9,12 @@ public class FollowCamera : MonoBehaviour {
 
 	private Vector3 velocity = Vector3.zero;
 
+	private Rigidbody2D body;
+
+	void Start() {
+		body = target.GetComponent<Rigidbody2D> ();
+	}
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -16,6 +22,8 @@ public class FollowCamera : MonoBehaviour {
 			Vector3 point = Camera.main.WorldToViewportPoint(target.position);
 			Vector3 delta = target.position - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
 			Vector3 destination = transform.position + delta + new Vector3(offset.x * target.localScale.x, offset.y, offset.z);
+			float z = Mathf.MoveTowards (transform.position.z, -6f - body.velocity.magnitude * 0.75f, Time.deltaTime * 10f);
+			destination.z = z;
 			transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
 		}
 
