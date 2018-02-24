@@ -46,6 +46,7 @@ public class Panda : MonoBehaviour {
 	public ParticleSystem sleepParticles;
 
 	private bool sleeping = true;
+	private float rollCooldown = 0f;
 
 	// Use this for initialization
 	void Start () {
@@ -61,12 +62,14 @@ public class Panda : MonoBehaviour {
 	void ShowWake() {
 		Invoke ("ShowWakeAgain", 7f);
 		info.ShowText ("MILLIE", "WOKE UP");
+		MessageSound ();
 		canMove = true;
 	}
 
 	void ShowWakeAgain() {
 		if (!hasMoved) {
 			info.ShowText ("NO REALLY,", "MILLIE WOKE UP!", 6f, 0);
+			MessageSound ();
 		}
 	}
 	
@@ -93,6 +96,8 @@ public class Panda : MonoBehaviour {
 				break;
 			}
 		}
+
+		RollCheck ();
 			
 	}
 
@@ -128,6 +133,9 @@ public class Panda : MonoBehaviour {
 			}
 
 			EffectManager.Instance.AddEffectToParent(4, transform.position, transform);
+
+			AudioManager.Instance.PlayEffectAt (12, transform.position, 0.25f);
+			AudioManager.Instance.PlayEffectAt (10, transform.position, 0.25f);
 		}
 
 		body.angularVelocity = Mathf.Clamp (body.angularVelocity, -maxRotationSpeed, maxRotationSpeed);
@@ -162,6 +170,7 @@ public class Panda : MonoBehaviour {
 			face.Emote (Face.Emotion.Sneaky, Face.Emotion.Default, 2f);
 			WallHolder.Instance.UpdateWalls (rollDir);
 			currentDirection = rollDir;
+			AudioManager.Instance.PlayEffectAt (11, transform.position, 0.3f);
 		}
 	}
 
@@ -179,6 +188,7 @@ public class Panda : MonoBehaviour {
 				hasEnded = true;
 				face.Emote (Face.Emotion.Brag);
 				info.ShowText ("MILLIE FEELS GRATEFUL", "...ALSO HORNY");
+				MessageSound ();
 				Invoke ("TheEnd", 5f);
 			}
 		}
@@ -188,6 +198,9 @@ public class Panda : MonoBehaviour {
 		if (coll.relativeVelocity.magnitude > dieLimit) {
 			Die ();
 		} else {
+
+			AudioManager.Instance.PlayEffectAt (0, transform.position, Mathf.Clamp(coll.relativeVelocity.magnitude * 0.05f, 0f, 2f));
+
 			if (coll.relativeVelocity.magnitude > 5f) {
 
 				EffectManager.Instance.AddEffect (6, coll.contacts [0].point);
@@ -198,8 +211,13 @@ public class Panda : MonoBehaviour {
 		}
 	}
 
+	void MessageSound() {
+		AudioManager.Instance.PlayEffectAt (1, transform.position, 0.5f);
+	}
+
 	void TheEnd() {
 		info.ShowText ("-- THE END --", "THANKS FOR PLAYING!", 30f);
+		MessageSound ();
 		dimmer.FadeIn (5f);
 	}
 
@@ -210,6 +228,10 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (coll.tag == "Leaf") {
+
+			AudioManager.Instance.PlayEffectAt (5, transform.position, 0.75f);
+			AudioManager.Instance.PlayEffectAt (4, transform.position, 0.75f);
+			AudioManager.Instance.PlayEffectAt (9, transform.position, 0.75f);
 
 			if (Random.value < 0.5f) {
 				face.Emote (Face.Emotion.Happy, Face.Emotion.Default, 2f);
@@ -235,26 +257,31 @@ public class Panda : MonoBehaviour {
 		
 		if (points == 1) {
 			info.ShowText ("MILLIE LEARNED", "TO JUMP", 6f, 1);
+			MessageSound ();
 			canJump = true;
 		}
 
 		if (points == 4) {
 			info.ShowText ("MILLIE LEARNED", "HIGHER JUMP");
+			MessageSound ();
 			highJump = true;
 		}
 
 		if (points == 6) {
 			info.ShowText ("MILLIE GREW", "THICKER SKIN");
+			MessageSound ();
 			thickSkin = true;
 		}
 
 		if (points == 11) {
 			info.ShowText ("MILLIE LEARNED", "DOUBLE JUMP");
+			MessageSound ();
 			canDoubleJump = true;
 		}
 
 		if (points == 15) {
 			info.ShowText ("MILLIE WANTS", "TO MATE!");
+			MessageSound ();
 			canDoubleJump = true;
 			mate.SetActive (true);
 		}
@@ -262,6 +289,12 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Die() {
+
+		AudioManager.Instance.PlayEffectAt (6, transform.position, 1f);
+		AudioManager.Instance.PlayEffectAt (7, transform.position, 1f);
+		AudioManager.Instance.PlayEffectAt (0, transform.position, 2f);
+		AudioManager.Instance.PlayEffectAt (8, transform.position, 0.75f);
+
 		AudioManager.Instance.HighpassOn (4f);
 
 		sleepParticles.gameObject.SetActive (false);
@@ -276,6 +309,10 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Respawn() {
+
+		AudioManager.Instance.PlayEffectAt (8, spawnPoint, 0.75f);
+		AudioManager.Instance.PlayEffectAt (10, spawnPoint, 2f);
+		AudioManager.Instance.PlayEffectAt (3, spawnPoint, 0.5f);
 
 		EffectManager.Instance.AddEffect (7, spawnPoint);
 		EffectManager.Instance.AddEffect (1, spawnPoint);
@@ -294,5 +331,20 @@ public class Panda : MonoBehaviour {
 		face.Emote (Face.Emotion.Angry, Face.Emotion.Default, 5f);
 
 		transform.localScale = Vector3.one * 0.5f;
+	}
+
+	void RollCheck() {
+		
+		if (Mathf.Abs (body.angularVelocity) > 20f && rollCooldown <= 0f) {
+			float fixedAngle = transform.rotation.eulerAngles.z % 360;
+
+			if (Mathf.Abs (fixedAngle - 180f) < 10f) {
+				rollCooldown = 0.25f;
+				AudioManager.Instance.PlayEffectAt (13, transform.position, 0.1f);
+				AudioManager.Instance.PlayEffectAt (1, transform.position, 0.2f);
+			}
+		}
+
+		rollCooldown -= Time.deltaTime;
 	}
 }

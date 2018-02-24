@@ -89,7 +89,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 64
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -168,7 +168,21 @@ MonoBehaviour:
   volume: 0.5
   effectPrefab: {fileID: 114852473009967456, guid: 3d15b96e9a8fd4b68902e126f7cce22b,
     type: 2}
-  effects: []
+  effects:
+  - {fileID: 8300000, guid: 7b51676ed1e5d456c95688c188aada0a, type: 3}
+  - {fileID: 8300000, guid: 221305cce96394705ae79ed413c3be23, type: 3}
+  - {fileID: 8300000, guid: daf5dc916802045109a808e5413d0229, type: 3}
+  - {fileID: 8300000, guid: 3970e968355d54f18990983986d4a025, type: 3}
+  - {fileID: 8300000, guid: d0f0b2e597c3f4c80b5c6e2268cee7f5, type: 3}
+  - {fileID: 8300000, guid: a9e6dfc8d08434f368856b21ea61dedf, type: 3}
+  - {fileID: 8300000, guid: 36234ce8b03454c9cb639007b25b03ee, type: 3}
+  - {fileID: 8300000, guid: c88d09cd86d734781a7cdf92119fd80a, type: 3}
+  - {fileID: 8300000, guid: 25767d441cb1d4a1b9007a181c6859e2, type: 3}
+  - {fileID: 8300000, guid: f84817ec654814b35b3345788ef4cf3d, type: 3}
+  - {fileID: 8300000, guid: 3a7b391f860bd4298bb2ccd75efbf5b1, type: 3}
+  - {fileID: 8300000, guid: 0acafddfe2b0141f8ac424100319d10c, type: 3}
+  - {fileID: 8300000, guid: 3aac4e1f80d514022a8b001ddeea7e0d, type: 3}
+  - {fileID: 8300000, guid: 2e47ce5ace4ff46dfabd1ecdc18df173, type: 3}
   lowpass: {fileID: 169755091562307886}
   highpass: {fileID: 165086303927786092}
   lowPassFactor: 0
