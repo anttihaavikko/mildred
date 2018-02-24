@@ -17,6 +17,9 @@ public class InfoText : MonoBehaviour {
 	}
 
 	public void ShowText(string text1, string text2, float delay = 4f, int image = -1) {
+
+		AudioManager.Instance.LowpassOn (delay);
+
 		text1 = text1.Replace ("THE END", "<color=#FF8E00>THE END</color>");
 		text1 = text1.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");
 		text2 = text2.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");

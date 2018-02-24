@@ -262,6 +262,8 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Die() {
+		AudioManager.Instance.HighpassOn (4f);
+
 		sleepParticles.gameObject.SetActive (false);
 
 		EffectManager.Instance.AddEffect (0, transform.position);

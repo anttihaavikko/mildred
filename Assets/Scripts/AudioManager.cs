@@ -15,6 +15,8 @@ public class AudioManager : MonoBehaviour {
 	public AudioLowPassFilter lowpass;
 	public AudioHighPassFilter highpass;
 
+	public float lowPassFactor = 0f;
+
 	// private AudioReverbFilter reverb;
 	// private AudioReverbPreset fromReverb, toReverb;
 
@@ -55,14 +57,32 @@ public class AudioManager : MonoBehaviour {
 		}
 	}
 
+	public void LowpassOn(float delay) {
+		Lowpass (true);
+		Invoke ("LowpassOff", delay);
+	}
+
+	private void LowpassOff() {
+		Lowpass (false);
+	}
+
 	public void Lowpass(bool state = true) {
 		doingLowpass = state;
 		doingHighpass = false;
 	}
 
+	public void HighpassOn(float delay) {
+		Highpass (true);
+		Invoke ("LowpassOff", delay);
+	}
+
 	public void Highpass(bool state = true) {
 		doingHighpass = state;
 		doingLowpass = false;
+	}
+
+	private void HighpassOff() {
+		Highpass (false);
 	}
 
 	public void ChangeMusic(int next, float fadeOutDur, float fadeInDur, float startDelay) {
@@ -93,12 +113,12 @@ public class AudioManager : MonoBehaviour {
 	void Update() {
 
 		float targetPitch = 1f;
-		float targetLowpass = (doingLowpass) ? 5000f : 22000;
+		float targetLowpass = (doingLowpass) ? 2500f : 5000f;
 		float targetHighpass = (doingHighpass) ? 400f : 10f;
 		float changeSpeed = 0.075f;
 
 		curMusic.pitch = Mathf.MoveTowards (curMusic.pitch, targetPitch, 0.005f * changeSpeed);
-		lowpass.cutoffFrequency = Mathf.MoveTowards (lowpass.cutoffFrequency, targetLowpass, 750f * changeSpeed);
+		lowpass.cutoffFrequency = Mathf.MoveTowards (lowpass.cutoffFrequency, targetLowpass, 900f * changeSpeed);
 		highpass.cutoffFrequency = Mathf.MoveTowards (highpass.cutoffFrequency, targetHighpass, 50f * changeSpeed);
 	}
 
