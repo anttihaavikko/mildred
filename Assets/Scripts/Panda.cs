@@ -36,6 +36,9 @@ public class Panda : MonoBehaviour {
 	private bool hasDoubleJumped = false;
 	private bool thickSkin = false;
 	private bool highJump = false;
+	private bool hasEnded = false;
+
+	public GameObject mate;
 
 	// Use this for initialization
 	void Start () {
@@ -103,12 +106,19 @@ public class Panda : MonoBehaviour {
 			float jump = highJump ? jumpForce * 1.2f : jumpForce;
 			body.AddForce (Vector2.up * jump, ForceMode2D.Impulse);
 			hasDoubleJumped = !grounded;
+
+			EffectManager.Instance.AddEffectToParent(4, transform.position, transform);
 		}
 
 		body.angularVelocity = Mathf.Clamp (body.angularVelocity, -maxRotationSpeed, maxRotationSpeed);
 
 		if (Application.isEditor && Input.GetKeyDown (KeyCode.R)) {
 			Die ();
+		}
+
+		if (Application.isEditor && Input.GetKeyDown (KeyCode.KeypadPlus)) {
+			points++;
+			SkillInfo ();
 		}
 
 		int rollDir = 0;
@@ -135,16 +145,31 @@ public class Panda : MonoBehaviour {
 			return;
 		}
 
+		if (coll.gameObject.tag == "Mate") {
+
+			EffectManager.Instance.AddEffect (5, coll.contacts [0].point);
+
+			if (!hasEnded) {
+				hasEnded = true;
+				info.ShowText ("MILLIE FEELS GRATEFUL", "...ALSO HORNY");
+				Invoke ("TheEnd", 5f);
+			}
+		}
+
 		float dieLimit = thickSkin ? 30f : 15f;
 
 		if (coll.relativeVelocity.magnitude > dieLimit) {
 			Die ();
 		} else {
-			Debug.Log (coll.relativeVelocity.magnitude);
 			if (coll.relativeVelocity.magnitude > 5f) {
+				hasDoubleJumped = false;
 				cam.BaseEffect (coll.relativeVelocity.magnitude * 0.1f);
 			}
 		}
+	}
+
+	void TheEnd() {
+		info.ShowText ("-- THE END --", "THANKS FOR PLAYING!", 20f);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
@@ -194,6 +219,12 @@ public class Panda : MonoBehaviour {
 		if (points == 9) {
 			info.ShowText ("MILLIE LEARNED", "DOUBLE JUMP");
 			canDoubleJump = true;
+		}
+
+		if (points == 12) {
+			info.ShowText ("MILLIE WANTS", "TO MATE!");
+			canDoubleJump = true;
+			mate.SetActive (true);
 		}
 			
 	}

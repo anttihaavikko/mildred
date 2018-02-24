@@ -17,6 +17,8 @@ public class InfoText : MonoBehaviour {
 	}
 
 	public void ShowText(string text1, string text2, float delay = 4f, int image = -1) {
+		text1 = text1.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");
+		text2 = text2.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");
 		textBox.text = text1 + "\n<size=50>" + text2 + "</size>";
 
 		if (image > -1) {
