@@ -219,12 +219,12 @@ public class Panda : MonoBehaviour {
 			thickSkin = true;
 		}
 
-		if (points == 9) {
+		if (points == 11) {
 			info.ShowText ("MILLIE LEARNED", "DOUBLE JUMP");
 			canDoubleJump = true;
 		}
 
-		if (points == 12) {
+		if (points == 15) {
 			info.ShowText ("MILLIE WANTS", "TO MATE!");
 			canDoubleJump = true;
 			mate.SetActive (true);
