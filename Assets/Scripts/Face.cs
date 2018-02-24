@@ -51,6 +51,8 @@ public class Face : MonoBehaviour {
 
 	public bool followMouse = false;
 
+	public bool sleeping = true;
+
 	// Use this for initialization
 	void Awake () {
 
@@ -73,7 +75,23 @@ public class Face : MonoBehaviour {
 		}
 
 		ResetBlink ();
+
 		size = eyes[0].localScale.y;
+
+		if (sleeping) {
+			for (int i = 0; i < eyes.Length; i++) {
+				eyes[i].localScale = new Vector2 (eyes[i].localScale.x, size * 0.1f);
+			}
+		}
+	}
+
+	public void WakeUp() {
+		if (sleeping) {
+			sleeping = false;
+			for (int i = 0; i < eyes.Length; i++) {
+				eyes [i].localScale = new Vector2 (eyes [i].localScale.x, size);
+			}
+		}
 	}
 
 	// Update is called once per frame
@@ -174,6 +192,10 @@ public class Face : MonoBehaviour {
 
 	void BlinkUpdate() {
 		if (Time.timeScale < 0.1f) {
+			return;
+		}
+
+		if (sleeping) {
 			return;
 		}
 

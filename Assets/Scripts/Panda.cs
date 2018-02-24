@@ -42,6 +42,10 @@ public class Panda : MonoBehaviour {
 
 	public GameObject mate;
 
+	public ParticleSystem sleepParticles;
+
+	private bool sleeping = true;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
@@ -70,7 +74,7 @@ public class Panda : MonoBehaviour {
 		if (!hasMoved && (transform.position - startPos).magnitude > 2f) {
 			hasMoved = true;
 		}
-
+			
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
 
 		grounded = false;
@@ -94,7 +98,12 @@ public class Panda : MonoBehaviour {
 		float dir = InputMagic.Instance.GetAxis (InputMagic.STICK_OR_DPAD_X);
 		body.AddTorque (-dir * rollForce);
 
-		targetSize = (InputMagic.Instance.GetButton (InputMagic.A)) ? new Vector3 (1.1f, 0.9f, 1f) : new Vector3 (1f, 1f, 1f);
+		if (sleeping) {
+			float pos = Mathf.Abs(Mathf.Sin (Time.time)) * 0.05f;
+			targetSize = new Vector3 (1f + pos, 1f - pos, 1f);
+		} else {
+			targetSize = (InputMagic.Instance.GetButton (InputMagic.A)) ? new Vector3 (1.1f, 0.9f, 1f) : new Vector3 (1f, 1f, 1f);
+		}
 
 		if(Physics2D.OverlapCircle(transform.position, 0.2f, groundLayer)) {
 			Die();
@@ -128,10 +137,16 @@ public class Panda : MonoBehaviour {
 
 		if (body.angularVelocity > rollLimit) {
 			rollDir = 1;
+			sleeping = false;
+			face.WakeUp ();
+			sleepParticles.Stop ();
 		}
 
 		if (body.angularVelocity < -rollLimit) {
 			rollDir = -1;
+			sleeping = false;
+			face.WakeUp ();
+			sleepParticles.Stop ();
 		}
 
 		if (rollDir != 0 && rollDir != currentDirection) {
@@ -153,6 +168,7 @@ public class Panda : MonoBehaviour {
 
 			if (!hasEnded) {
 				hasEnded = true;
+				face.Emote (Face.Emotion.Brag);
 				info.ShowText ("MILLIE FEELS GRATEFUL", "...ALSO HORNY");
 				Invoke ("TheEnd", 5f);
 			}
@@ -209,7 +225,7 @@ public class Panda : MonoBehaviour {
 			canJump = true;
 		}
 
-		if (points == 3) {
+		if (points == 4) {
 			info.ShowText ("MILLIE LEARNED", "HIGHER JUMP");
 			highJump = true;
 		}
