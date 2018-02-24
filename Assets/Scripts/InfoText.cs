@@ -17,6 +17,7 @@ public class InfoText : MonoBehaviour {
 	}
 
 	public void ShowText(string text1, string text2, float delay = 4f, int image = -1) {
+		text1 = text1.Replace ("THE END", "<color=#FF8E00>THE END</color>");
 		text1 = text1.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");
 		text2 = text2.Replace ("MILLIE", "<color=#FF8E00>MILLIE</color>");
 		textBox.text = text1 + "\n<size=50>" + text2 + "</size>";
@@ -30,7 +31,7 @@ public class InfoText : MonoBehaviour {
 		}
 
 		CancelInvoke ("HideText");
-		Invoke ("HideText", 4f);
+		Invoke ("HideText", delay);
 		anim.ResetTrigger ("hide");
 		anim.ResetTrigger ("show");
 		anim.SetTrigger ("show");

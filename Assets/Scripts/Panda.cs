@@ -38,6 +38,8 @@ public class Panda : MonoBehaviour {
 	private bool highJump = false;
 	private bool hasEnded = false;
 
+	public Dimmer dimmer;
+
 	public GameObject mate;
 
 	// Use this for initialization
@@ -58,7 +60,7 @@ public class Panda : MonoBehaviour {
 
 	void ShowWakeAgain() {
 		if (!hasMoved) {
-			info.ShowText ("NO REALLY,", "MILLIE WOKE UP!", 4f, 0);
+			info.ShowText ("NO REALLY,", "MILLIE WOKE UP!", 6f, 0);
 		}
 	}
 	
@@ -169,7 +171,8 @@ public class Panda : MonoBehaviour {
 	}
 
 	void TheEnd() {
-		info.ShowText ("-- THE END --", "THANKS FOR PLAYING!", 20f);
+		info.ShowText ("-- THE END --", "THANKS FOR PLAYING!", 30f);
+		dimmer.FadeIn (5f);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
@@ -202,7 +205,7 @@ public class Panda : MonoBehaviour {
 	void SkillInfo() {
 		
 		if (points == 1) {
-			info.ShowText ("MILLIE LEARNED", "TO JUMP", 4f, 0);
+			info.ShowText ("MILLIE LEARNED", "TO JUMP", 6f, 1);
 			canJump = true;
 		}
 
