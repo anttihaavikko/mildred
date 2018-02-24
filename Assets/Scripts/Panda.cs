@@ -37,6 +37,7 @@ public class Panda : MonoBehaviour {
 	private bool thickSkin = false;
 	private bool highJump = false;
 	private bool hasEnded = false;
+	private bool canMove = false;
 
 	public Dimmer dimmer;
 
@@ -60,6 +61,7 @@ public class Panda : MonoBehaviour {
 	void ShowWake() {
 		Invoke ("ShowWakeAgain", 7f);
 		info.ShowText ("MILLIE", "WOKE UP");
+		canMove = true;
 	}
 
 	void ShowWakeAgain() {
@@ -96,7 +98,10 @@ public class Panda : MonoBehaviour {
 
 	void FixedUpdate() {
 		float dir = InputMagic.Instance.GetAxis (InputMagic.STICK_OR_DPAD_X);
-		body.AddTorque (-dir * rollForce);
+
+		if (canMove) {
+			body.AddTorque (-dir * rollForce);
+		}
 
 		if (sleeping) {
 			float pos = Mathf.Abs(Mathf.Sin (Time.time)) * 0.05f;
@@ -117,6 +122,10 @@ public class Panda : MonoBehaviour {
 			float jump = highJump ? jumpForce * 1.2f : jumpForce;
 			body.AddForce (Vector2.up * jump, ForceMode2D.Impulse);
 			hasDoubleJumped = !grounded;
+
+			if (grounded) {
+				EffectManager.Instance.AddEffect (6, transform.position + Vector3.down * 0.75f);
+			}
 
 			EffectManager.Instance.AddEffectToParent(4, transform.position, transform);
 		}
@@ -180,6 +189,9 @@ public class Panda : MonoBehaviour {
 			Die ();
 		} else {
 			if (coll.relativeVelocity.magnitude > 5f) {
+
+				EffectManager.Instance.AddEffect (6, coll.contacts [0].point);
+
 				hasDoubleJumped = false;
 				cam.BaseEffect (coll.relativeVelocity.magnitude * 0.1f);
 			}
