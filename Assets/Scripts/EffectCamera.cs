@@ -5,8 +5,6 @@ using UnityEngine.PostProcessing;
 
 public class EffectCamera : MonoBehaviour {
 
-	public Material transitionMaterial;
-
 	private float cutoff = 1f, targetCutoff = 1f;
 	private float prevCutoff = 1f;
 	private float cutoffPos = 0f;
@@ -27,10 +25,6 @@ public class EffectCamera : MonoBehaviour {
 	}
 
 	void Update() {
-		cutoffPos += Time.fixedDeltaTime / transitionTime;
-		cutoffPos = (cutoffPos > 1f) ? 1f : cutoffPos;
-		cutoff = Mathf.Lerp (prevCutoff, targetCutoff, cutoffPos);
-		transitionMaterial.SetFloat ("_Cutoff", cutoff);
 
 		// chromatic aberration update
 		if (filters) {
@@ -42,20 +36,16 @@ public class EffectCamera : MonoBehaviour {
 
 		if (shakeTime > 0f) {
 			shakeTime -= Time.deltaTime;
-			transform.position = originalPos + new Vector3 (Random.Range (-shakeAmount, shakeAmount), Random.Range (-shakeAmount, shakeAmount), 0);
+			transform.position = transform.position + new Vector3 (Random.Range (-shakeAmount, shakeAmount), Random.Range (-shakeAmount, shakeAmount), 0);
 		} else {
-			transform.position = originalPos;
+			transform.position = transform.position;
 		}
+
+		Time.timeScale = Mathf.MoveTowards (Time.timeScale, 1f, Time.unscaledDeltaTime * 0.5f);
 	}
 
 	void StartFade() {
 		Fade (false, 0.5f);
-	}
-
-	void OnRenderImage(RenderTexture src, RenderTexture dst) {
-		if (transitionMaterial) {
-			Graphics.Blit (src, dst, transitionMaterial);
-		}
 	}
 
 	public void Fade(bool show, float delay) {
@@ -78,7 +68,8 @@ public class EffectCamera : MonoBehaviour {
 	}
 
 	public void BaseEffect(float mod = 1f) {
-		Shake (0.04f * mod, 0.075f * mod);
-		Chromate (0.25f * mod, 0.1f * mod);
+		Shake (0.06f * mod, 0.1f * mod);
+		Chromate (0.5f * mod, 0.3f * mod);
+		Time.timeScale = 0.75f;
 	}
 }

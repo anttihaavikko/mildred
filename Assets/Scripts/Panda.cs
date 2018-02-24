@@ -22,10 +22,15 @@ public class Panda : MonoBehaviour {
 
 	private int points = 0;
 
+	private EffectCamera cam;
+
+	public Face face;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
 		spawnPoint = transform.position;
+		cam = Camera.main.GetComponent<EffectCamera> ();
 	}
 	
 	// Update is called once per frame
@@ -85,18 +90,24 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (rollDir != 0 && rollDir != currentDirection) {
+			face.Emote (Face.Emotion.Sneaky, Face.Emotion.Default, 2f);
 			WallHolder.Instance.UpdateWalls (rollDir);
 			currentDirection = rollDir;
 		}
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) {
-		if (coll.relativeVelocity.magnitude > 50f) {
-			Die ();
-		}
-
 		if (coll.gameObject.tag == "Spikes") {
 			Die ();
+			return;
+		}
+
+		if (coll.relativeVelocity.magnitude > 50f) {
+			Die ();
+		} else {
+			if (coll.relativeVelocity.magnitude > 5f) {
+				cam.BaseEffect (coll.relativeVelocity.magnitude * 0.1f);
+			}
 		}
 	}
 
@@ -107,6 +118,17 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (coll.tag == "Leaf") {
+
+			if (Random.value < 0.5f) {
+				face.Emote (Face.Emotion.Happy, Face.Emotion.Default, 2f);
+			} else {
+				face.Emote (Face.Emotion.Brag);
+			}
+
+			cam.BaseEffect (1.5f);
+			EffectManager.Instance.AddEffect (1, coll.transform.position);
+			EffectManager.Instance.AddEffect (2, coll.transform.position);
+
 			Destroy (coll.gameObject);
 			points++;
 			Debug.Log (points + " points");
@@ -114,8 +136,13 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Die() {
+		EffectManager.Instance.AddEffect (0, transform.position);
+		EffectManager.Instance.AddEffect (1, transform.position);
+		EffectManager.Instance.AddLimitedEffect (3, transform.position);
 		gameObject.SetActive (false);
 		Invoke ("Respawn", 2f);
+
+		cam.BaseEffect (3f);
 	}
 
 	void Respawn() {
@@ -129,5 +156,7 @@ public class Panda : MonoBehaviour {
 		tailBody.transform.localPosition = new Vector3 (0, -1.783f, 0f);
 
 		gameObject.SetActive (true);
+
+		face.Emote (Face.Emotion.Angry, Face.Emotion.Default, 5f);
 	}
 }
