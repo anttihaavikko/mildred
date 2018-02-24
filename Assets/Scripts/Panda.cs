@@ -220,6 +220,7 @@ public class Panda : MonoBehaviour {
 			cam.BaseEffect (1.5f);
 			EffectManager.Instance.AddEffect (1, coll.transform.position);
 			EffectManager.Instance.AddEffect (2, coll.transform.position);
+			EffectManager.Instance.AddEffect (7, coll.transform.position);
 
 			Destroy (coll.gameObject);
 			points++;
@@ -261,6 +262,8 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Die() {
+		sleepParticles.gameObject.SetActive (false);
+
 		EffectManager.Instance.AddEffect (0, transform.position);
 		EffectManager.Instance.AddEffect (1, transform.position);
 		EffectManager.Instance.AddLimitedEffect (3, transform.position);
@@ -271,6 +274,7 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Respawn() {
+
 		body.velocity = Vector2.zero;
 		body.angularVelocity = 0f;
 
