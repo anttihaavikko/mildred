@@ -275,6 +275,9 @@ public class Panda : MonoBehaviour {
 
 	void Respawn() {
 
+		EffectManager.Instance.AddEffect (7, spawnPoint);
+		EffectManager.Instance.AddEffect (1, spawnPoint);
+
 		body.velocity = Vector2.zero;
 		body.angularVelocity = 0f;
 
@@ -287,5 +290,7 @@ public class Panda : MonoBehaviour {
 		gameObject.SetActive (true);
 
 		face.Emote (Face.Emotion.Angry, Face.Emotion.Default, 5f);
+
+		transform.localScale = Vector3.one * 0.5f;
 	}
 }
