@@ -57,6 +57,10 @@ public class Panda : MonoBehaviour {
 		startPos = transform.position;
 
 		Invoke ("ShowWake", 2f);
+
+		if (!Application.isEditor) {
+			Cursor.visible = false;
+		}
 	}
 
 	void ShowWake() {
@@ -309,6 +313,10 @@ public class Panda : MonoBehaviour {
 	}
 
 	void Respawn() {
+
+		if (!Application.isEditor) {
+			Cursor.visible = false;
+		}
 
 		AudioManager.Instance.PlayEffectAt (8, spawnPoint, 0.75f);
 		AudioManager.Instance.PlayEffectAt (10, spawnPoint, 2f);
