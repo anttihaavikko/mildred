@@ -34,6 +34,8 @@ public class Panda : MonoBehaviour {
 	private bool canJump = false;
 	private bool canDoubleJump = false;
 	private bool hasDoubleJumped = false;
+	private bool thickSkin = false;
+	private bool highJump = false;
 
 	// Use this for initialization
 	void Start () {
@@ -53,7 +55,7 @@ public class Panda : MonoBehaviour {
 
 	void ShowWakeAgain() {
 		if (!hasMoved) {
-			info.ShowText ("NO REALLY", "MILLIE WOKE UP!", 4f, 0);
+			info.ShowText ("NO REALLY,", "MILLIE WOKE UP!", 4f, 0);
 		}
 	}
 	
@@ -98,7 +100,8 @@ public class Panda : MonoBehaviour {
 		
 		if (canJump && (grounded || (canDoubleJump && !hasDoubleJumped)) && InputMagic.Instance.GetButtonDown (InputMagic.A)) {
 			body.velocity = new Vector2 (body.velocity.x, 0);
-			body.AddForce (Vector2.up * jumpForce, ForceMode2D.Impulse);
+			float jump = highJump ? jumpForce * 1.2f : jumpForce;
+			body.AddForce (Vector2.up * jump, ForceMode2D.Impulse);
 			hasDoubleJumped = !grounded;
 		}
 
@@ -132,7 +135,9 @@ public class Panda : MonoBehaviour {
 			return;
 		}
 
-		if (coll.relativeVelocity.magnitude > 15f) {
+		float dieLimit = thickSkin ? 30f : 15f;
+
+		if (coll.relativeVelocity.magnitude > dieLimit) {
 			Die ();
 		} else {
 			Debug.Log (coll.relativeVelocity.magnitude);
@@ -170,15 +175,27 @@ public class Panda : MonoBehaviour {
 	}
 
 	void SkillInfo() {
+		
 		if (points == 1) {
 			info.ShowText ("MILLIE LEARNED", "TO JUMP", 4f, 0);
 			canJump = true;
 		}
 
-		if (points == 2) {
+		if (points == 3) {
+			info.ShowText ("MILLIE LEARNED", "HIGHER JUMP");
+			highJump = true;
+		}
+
+		if (points == 6) {
+			info.ShowText ("MILLIE GREW", "THICKER SKIN");
+			thickSkin = true;
+		}
+
+		if (points == 9) {
 			info.ShowText ("MILLIE LEARNED", "DOUBLE JUMP");
 			canDoubleJump = true;
 		}
+			
 	}
 
 	void Die() {
