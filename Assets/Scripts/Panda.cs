@@ -26,15 +26,44 @@ public class Panda : MonoBehaviour {
 
 	public Face face;
 
+	public InfoText info;
+
+	private bool hasMoved = false;
+	private Vector3 startPos;
+
+	private bool canJump = false;
+	private bool canDoubleJump = false;
+	private bool hasDoubleJumped = false;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
 		spawnPoint = transform.position;
 		cam = Camera.main.GetComponent<EffectCamera> ();
+
+		startPos = transform.position;
+
+		Invoke ("ShowWake", 2f);
+	}
+
+	void ShowWake() {
+		Invoke ("ShowWakeAgain", 7f);
+		info.ShowText ("MILLIE", "WOKE UP");
+	}
+
+	void ShowWakeAgain() {
+		if (!hasMoved) {
+			info.ShowText ("NO REALLY", "MILLIE WOKE UP!", 4f, 0);
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (!hasMoved && (transform.position - startPos).magnitude > 2f) {
+			hasMoved = true;
+		}
+
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
 
 		grounded = false;
@@ -67,9 +96,10 @@ public class Panda : MonoBehaviour {
 
 	void LateUpdate() {
 		
-		if (grounded && InputMagic.Instance.GetButtonDown (InputMagic.A)) {
+		if (canJump && (grounded || (canDoubleJump && !hasDoubleJumped)) && InputMagic.Instance.GetButtonDown (InputMagic.A)) {
 			body.velocity = new Vector2 (body.velocity.x, 0);
 			body.AddForce (Vector2.up * jumpForce, ForceMode2D.Impulse);
+			hasDoubleJumped = !grounded;
 		}
 
 		body.angularVelocity = Mathf.Clamp (body.angularVelocity, -maxRotationSpeed, maxRotationSpeed);
@@ -102,9 +132,10 @@ public class Panda : MonoBehaviour {
 			return;
 		}
 
-		if (coll.relativeVelocity.magnitude > 50f) {
+		if (coll.relativeVelocity.magnitude > 15f) {
 			Die ();
 		} else {
+			Debug.Log (coll.relativeVelocity.magnitude);
 			if (coll.relativeVelocity.magnitude > 5f) {
 				cam.BaseEffect (coll.relativeVelocity.magnitude * 0.1f);
 			}
@@ -132,6 +163,21 @@ public class Panda : MonoBehaviour {
 			Destroy (coll.gameObject);
 			points++;
 			Debug.Log (points + " points");
+
+			SkillInfo ();
+
+		}
+	}
+
+	void SkillInfo() {
+		if (points == 1) {
+			info.ShowText ("MILLIE LEARNED", "TO JUMP", 4f, 0);
+			canJump = true;
+		}
+
+		if (points == 2) {
+			info.ShowText ("MILLIE LEARNED", "DOUBLE JUMP");
+			canDoubleJump = true;
 		}
 	}
 
