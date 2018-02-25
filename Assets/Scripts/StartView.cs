@@ -6,12 +6,14 @@ using UnityEngine.SceneManagement;
 public class StartView : MonoBehaviour {
 	
 	private bool interacted = false;
+	private bool canStart = false;
 	public Dimmer dimmer;
 	public Animator anim;
 
 	void Start() {
 		SceneManager.LoadSceneAsync ("Options", LoadSceneMode.Additive);
 		Cursor.visible = true;
+		Invoke ("EnableStarting", 1.5f);
 	}
 
 	// Update is called once per frame
@@ -28,7 +30,7 @@ public class StartView : MonoBehaviour {
 			return;
 		}
 
-		if (Input.anyKeyDown && !interacted && !Input.GetKey(KeyCode.Escape)) {
+		if (canStart && Input.anyKeyDown && !interacted && !Input.GetKey(KeyCode.Escape)) {
 			interacted = true;
 			anim.SetTrigger ("hide");
 			dimmer.FadeIn (0.5f);
@@ -37,6 +39,10 @@ public class StartView : MonoBehaviour {
 			AudioManager.Instance.PlayEffectAt (8, Vector3.zero, 0.5f);
 			AudioManager.Instance.PlayEffectAt (9, Vector3.zero, 0.5f);
 		}
+	}
+
+	void EnableStarting() {
+		canStart = true;
 	}
 
 	void StartGame() {

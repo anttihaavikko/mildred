@@ -86,7 +86,7 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (Input.GetKeyUp (KeyCode.Escape)) {
-			SceneManager.LoadSceneAsync ("Start");
+			BackToStart ();
 		}
 			
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
@@ -228,6 +228,14 @@ public class Panda : MonoBehaviour {
 		info.ShowText ("-- THE END --", "THANKS FOR PLAYING!", 30f);
 		MessageSound ();
 		dimmer.FadeIn (5f);
+		Invoke ("BackToStart", 7f);
+	}
+
+	void BackToStart() {
+		SceneManager.LoadSceneAsync ("Start");
+
+		AudioManager.Instance.PlayEffectAt (8, transform.position, 0.5f);
+		AudioManager.Instance.PlayEffectAt (9, transform.position, 0.5f);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
