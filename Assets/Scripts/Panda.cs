@@ -86,7 +86,7 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (Input.GetKeyUp (KeyCode.Escape)) {
-			BackToStart ();
+			BackToStart (true);
 		}
 			
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
@@ -232,10 +232,16 @@ public class Panda : MonoBehaviour {
 	}
 
 	void BackToStart() {
+		BackToStart (false);
+	}
+
+	void BackToStart(bool doSounds) {
 		SceneManager.LoadSceneAsync ("Start");
 
-		AudioManager.Instance.PlayEffectAt (8, transform.position, 0.5f);
-		AudioManager.Instance.PlayEffectAt (9, transform.position, 0.5f);
+		if (doSounds) {
+			AudioManager.Instance.PlayEffectAt (8, transform.position, 0.5f);
+			AudioManager.Instance.PlayEffectAt (9, transform.position, 0.5f);
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
