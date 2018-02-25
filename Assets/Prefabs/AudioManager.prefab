@@ -183,6 +183,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0acafddfe2b0141f8ac424100319d10c, type: 3}
   - {fileID: 8300000, guid: 3aac4e1f80d514022a8b001ddeea7e0d, type: 3}
   - {fileID: 8300000, guid: 2e47ce5ace4ff46dfabd1ecdc18df173, type: 3}
+  - {fileID: 8300000, guid: 618455737bc4f4f878222982702a799c, type: 3}
   lowpass: {fileID: 169755091562307886}
   highpass: {fileID: 165086303927786092}
   lowPassFactor: 0

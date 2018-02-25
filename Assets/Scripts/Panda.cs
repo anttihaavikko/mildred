@@ -276,6 +276,10 @@ public class Panda : MonoBehaviour {
 			SkillInfo ();
 
 		}
+
+		if (coll.tag == "Bird") {
+			coll.gameObject.GetComponent<Bird> ().Fly ();
+		}
 	}
 
 	void SkillInfo() {
