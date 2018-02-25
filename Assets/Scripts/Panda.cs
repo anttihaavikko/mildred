@@ -86,7 +86,9 @@ public class Panda : MonoBehaviour {
 		}
 
 		if (Input.GetKeyUp (KeyCode.Escape)) {
-			BackToStart (true);
+//			BackToStart (true);
+			Invoke("BackToStart", 1f);
+			dimmer.FadeIn (1f);
 		}
 			
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
