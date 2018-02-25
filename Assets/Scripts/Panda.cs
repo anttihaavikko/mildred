@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Panda : MonoBehaviour {
 
@@ -82,6 +83,10 @@ public class Panda : MonoBehaviour {
 
 		if (!hasMoved && (transform.position - startPos).magnitude > 2f) {
 			hasMoved = true;
+		}
+
+		if (Input.GetKeyUp (KeyCode.Escape)) {
+			SceneManager.LoadSceneAsync ("Start");
 		}
 			
 		transform.localScale = Vector3.MoveTowards(transform.localScale, targetSize, Time.deltaTime);
